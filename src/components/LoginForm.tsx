@@ -1,20 +1,28 @@
 import { Button, Form, Input } from 'antd';
-import { FC } from 'react';
+import { FC, useState } from 'react';
+import { useActions } from '../hooks/useActions';
+import { useTypedSelector } from '../hooks/useTypedSelector';
 import { rules } from '../utils/rules';
 
 const LoginForm: FC = () => {
+  const { error, isLoading } = useTypedSelector((state) => state.auth);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const { signIn } = useActions();
+
   const submit = () => {
-    console.log('submit');
+    signIn(username, password);
   };
 
   return (
     <Form onFinish={submit}>
+      {error && <div style={{ color: 'red' }}>{error}</div>}
       <Form.Item
         label="Username"
         name="username"
         rules={[rules.required('Please input your username!')]}
       >
-        <Input />
+        <Input value={username} onChange={(e) => setUsername(e.target.value)} />
       </Form.Item>
 
       <Form.Item
@@ -22,10 +30,14 @@ const LoginForm: FC = () => {
         name="password"
         rules={[rules.required('Please input your password!')]}
       >
-        <Input.Password />
+        <Input
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          type="password"
+        />
       </Form.Item>
       <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-        <Button type="primary" htmlType="submit">
+        <Button type="primary" htmlType="submit" loading={isLoading}>
           Submit
         </Button>
       </Form.Item>
