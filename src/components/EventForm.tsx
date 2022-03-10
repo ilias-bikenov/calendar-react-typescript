@@ -1,6 +1,6 @@
 import { Button, DatePicker, Form, Input, Row, Select } from 'antd';
-import { Moment } from 'moment';
-import React, { FC, useState } from 'react';
+import moment, { Moment } from 'moment';
+import React, { FC, useEffect, useState } from 'react';
 import { useTypedSelector } from '../hooks/useTypedSelector';
 import { IEvent } from '../models/IEvents';
 import { IUser } from '../models/IUser';
@@ -11,7 +11,6 @@ interface EventFormProps {
   guests: IUser[];
   submit: (event: IEvent) => void;
 }
-
 const EventForm: FC<EventFormProps> = (props) => {
   const [event, setEvent] = useState<IEvent>({
     author: '',
@@ -19,9 +18,15 @@ const EventForm: FC<EventFormProps> = (props) => {
     description: '',
     guest: '',
   } as IEvent);
+  const { date: stateDate } = useTypedSelector((state) => state.event);
   const { user } = useTypedSelector((state) => state.auth);
+  const [form] = Form.useForm();
+  useEffect(() => {
+    form.resetFields();
+    selectDate(stateDate);
+  }, [stateDate]);
 
-  const selectDate = (date: Moment | null) => {
+  const selectDate = (date: Moment | null | undefined) => {
     if (date) {
       setEvent({ ...event, date: formatDate(date.toDate()) });
     }
@@ -29,11 +34,11 @@ const EventForm: FC<EventFormProps> = (props) => {
 
   const submitForm = () => {
     props.submit({ ...event, author: user.username });
-    console.log(event);
+    form.resetFields();
   };
 
   return (
-    <Form onFinish={submitForm}>
+    <Form onFinish={submitForm} form={form}>
       <Form.Item
         label="Event description"
         name="description"
@@ -46,6 +51,7 @@ const EventForm: FC<EventFormProps> = (props) => {
       </Form.Item>
 
       <Form.Item
+        initialValue={stateDate}
         label="Event date"
         name="date"
         rules={[

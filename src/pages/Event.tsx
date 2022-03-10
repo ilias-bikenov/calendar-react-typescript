@@ -8,10 +8,10 @@ import { IEvent } from '../models/IEvents';
 
 const Event: FC = () => {
   const [modalVisible, setModalVisible] = useState(false);
+  const [date, setDate] = useState(null);
   const { fetchGuests, createEvent, fetchEvents } = useActions();
   const { guests, events } = useTypedSelector((state) => state.event);
   const { user } = useTypedSelector((state) => state.auth);
-
   useEffect(() => {
     fetchGuests();
     fetchEvents(user.username);
@@ -24,7 +24,7 @@ const Event: FC = () => {
 
   return (
     <Layout>
-      <EventCalendar events={events} />
+      <EventCalendar events={events} setModalVisible={setModalVisible} />
       <Row justify="center">
         <Button onClick={() => setModalVisible(true)}>Add event</Button>
       </Row>

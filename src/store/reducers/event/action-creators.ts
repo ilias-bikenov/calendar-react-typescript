@@ -2,7 +2,13 @@ import { AppDispatch } from '../..';
 import { IEvent } from '../../../models/IEvents';
 import { IUser } from '../../../models/IUser';
 import UserService from '../../../api/UserService';
-import { EventActionsEnum, SetEventsAction, SetGuestsAction } from './types';
+import {
+  EventActionsEnum,
+  SetDateAction,
+  SetEventsAction,
+  SetGuestsAction,
+} from './types';
+import { Moment } from 'moment';
 
 export const EventActionCreators = {
   setGuests: (payload: IUser[]): SetGuestsAction => ({
@@ -11,6 +17,10 @@ export const EventActionCreators = {
   }),
   setEvents: (payload: IEvent[]): SetEventsAction => ({
     type: EventActionsEnum.SET_EVENTS,
+    payload,
+  }),
+  setDate: (payload: Moment): SetDateAction => ({
+    type: EventActionsEnum.SET_DATE,
     payload,
   }),
   fetchGuests: () => async (dispatch: AppDispatch) => {
