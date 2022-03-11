@@ -1,4 +1,4 @@
-import { Button, Layout, Modal, Row } from 'antd';
+import { Button, Layout, Modal, Row, Space } from 'antd';
 import React, { FC, useEffect, useState } from 'react';
 import EventCalendar from '../components/EventCalendar';
 import EventForm from '../components/EventForm';
@@ -24,10 +24,12 @@ const Event: FC = () => {
 
   return (
     <Layout>
-      <EventCalendar events={events} setModalVisible={setModalVisible} />
-      <Row justify="center">
-        <Button onClick={() => setModalVisible(true)}>Add event</Button>
+      <Row justify="end" style={{ padding: 12, paddingRight: 56 }}>
+        <Space direction="vertical" size={122}>
+          <Button onClick={() => setModalVisible(true)}>Add event</Button>
+        </Space>
       </Row>
+      <EventCalendar events={events} setModalVisible={setModalVisible} />
       <Modal
         title="Add event"
         visible={modalVisible}
