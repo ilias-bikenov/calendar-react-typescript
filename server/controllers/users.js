@@ -9,20 +9,23 @@ export const getAllUsers = async (req, res) => {
 
 export const addUser = async (req, res) => {
   console.log(req.body);
-  const hashedPassword = await bcrypt.hash(req.body.password, 5)
+  const hashedPassword = await bcrypt.hash(req.body.password, 5);
   try {
-    const user = await User.create(req.body)
+    const user = await User.create({ username: req.body.username, password: hashedPassword })
     res.status(201).json({ user })
 
   } catch (e) {
     console.log(e);
-    res.status(400).send(e.errors[Object.keys(e.errors)[0]].message)
+    if (e.errors) {
+      res.status(400).send(e.errors[Object.keys(e.errors)[0]].message)
+    }
+    res.status(400).send(e)
   }
 };
 
 export const getUser = async (req, res, next) => {
-  const { username } = req.params
-  const user = await User.findOne({ username })
+  const { username } = req.params;
+  const user = await User.findOne({ username });
   if (!user) {
     return next(createCustomError(`No user with username : ${username}`, 404))
   }
