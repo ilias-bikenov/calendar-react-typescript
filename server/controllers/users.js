@@ -8,7 +8,6 @@ export const getAllUsers = async (req, res) => {
 };
 
 export const addUser = async (req, res) => {
-  console.log(req.body);
   const hashedPassword = await bcrypt.hash(req.body.password, 5);
   try {
     const user = await User.create({ username: req.body.username, password: hashedPassword })
@@ -37,7 +36,7 @@ export const deleteUser = async (req, res, next) => {
   const { username } = req.params
   const user = await User.findOneAndDelete({ username })
   if (!user) {
-    return next(createCustomError(`No User with id : ${username}`, 404))
+    return next(createCustomError(`No User with username : ${username}`, 404))
   }
   res.status(200).json({ user })
 };
